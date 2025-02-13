@@ -1,9 +1,12 @@
 /*
-1a. Create Database called Diabetes
-1b. Create schemas for DM *** dim,tgt, stg and fact
-2. Create dimension tables
-3. Create fact table
-4. Use SELECT statement for SSIS
+1) Show completed mart schema
+2) Test		queries to show no data in fact table
+3) Execution of SSIS package
+4) Test query showing data populated in the fact table
+5) Show test queries - showing working join to the dimensions
+6) Show at least one error trapping node
+7) SSIS Package is organized and Presented 
+8) Show lookup table structure used for the dimensional table(s) builds 
 */
 
 CREATE DATABASE Diabetes
@@ -77,3 +80,27 @@ TRUNCATE TABLE fact.diabetes
 
 SELECT *
 FROM fact.diabetes
+
+-- Fact table loading after two ETL runs
+-- including supporting data from the dimension tables
+
+SELECT GenderName,
+       EthnicityName,
+	   Age,
+	   Income,
+	   BMI,
+	   Blood_Pressure,
+	   Cholesterol,
+	   Diabetes_Diagnosis
+FROM fact.diabetes fd
+LEFT OUTER JOIN dim.gender dg
+ON dg.GenderID = fd.GenderID
+LEFT OUTER JOIN dim.ethnicity de
+ON de.EthnicityID = fd.EthnicityID
+
+
+-- Test for errors
+
+SELECT *
+FROM error.diabetes
+ORDER BY LastLoad DESC
