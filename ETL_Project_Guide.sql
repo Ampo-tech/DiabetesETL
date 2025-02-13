@@ -81,6 +81,17 @@ TRUNCATE TABLE fact.diabetes
 SELECT *
 FROM fact.diabetes
 
+-- Execute the package
+
+Declare @execution_id bigint
+EXEC [SSISDB].[catalog].[create_execution] @package_name=N'Diabetes_Import.dtsx', @execution_id=@execution_id OUTPUT, @folder_name=N'DiabetesETL', @project_name=N'ProjectDiabetes', @use32bitruntime=False, @reference_id=Null, @runinscaleout=False
+Select @execution_id
+DECLARE @var0 smallint = 1
+EXEC [SSISDB].[catalog].[set_execution_parameter_value] @execution_id,  @object_type=50, @parameter_name=N'LOGGING_LEVEL', @parameter_value=@var0
+EXEC [SSISDB].[catalog].[start_execution] @execution_id
+GO
+
+
 -- Fact table loading after two ETL runs
 -- including supporting data from the dimension tables
 
